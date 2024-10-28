@@ -1,0 +1,1 @@
+import {Tuple} from './knight-functions.js'
