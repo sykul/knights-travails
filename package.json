@@ -15,5 +15,6 @@
     "url": "https://github.com/sykul/knights-travails/issues"
   },
   "homepage": "https://github.com/sykul/knights-travails#readme",
-  "description": ""
+  "description": "",
+  "type": "module"
 }
