@@ -16,6 +16,16 @@ function isValidPosition(arr) {
   };
 }
 
+function isOutOfRange(arr) {
+  if (arr.find((e) => !(typeof e === 'number'))
+    || arr.find(e => (e < 0 || 7 < e))) {
+      return false;
+    }
+    else {
+      return true;
+    };
+}
+
 
 function levelOrder(callback) {
   if (!callback instanceof Function) {
@@ -40,10 +50,20 @@ function levelOrder(callback) {
   }
 }
 
-function knightMoves(arr1, arr2) {
-  isValidPosition(arr1);
-  isValidPosition(arr2);
+function knightMoves(startPosition, targetPosition) {
+  isValidPosition(startPosition);
+  isValidPosition(targetPosition);
   
+  if (startPosition.toString() == targetPosition.toString()) {
+    console.log('0 moves');
+    return;
+  }
+
+  let visitedPositions = [startPosition];
+  let nextMoves = [];
+
+  
+
 
 }
 
