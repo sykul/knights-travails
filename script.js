@@ -1,3 +1,3 @@
-import {knightMoves} from './knight-functions.js'
+import {createGraphOfMoves} from './knight-functions.js'
 
-knightMoves([1,7], [1,7])
+console.log(createGraphOfMoves())
