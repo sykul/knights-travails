@@ -50,59 +50,82 @@ function levelOrder(callback) {
   }
 }
 
-function createGraphOfMoves() {
-
-  let array = [];
-  for (let i = 0; i < 8; i++) {
-    for (let j = 0; j < 8; j++) {
-      array.push([[i, j]]);
-    }
-  }
-
-  array.forEach((item, index, thisArray) => {
-    let arr = item[0];
-    let options = [
-      [arr[0] + 1, arr[1] + 2],
-      [arr[0] + 2, arr[1] + 1],
-      [arr[0] + 2, arr[1] - 1],
-      [arr[0] + 1, arr[1] - 2],
-      [arr[0] - 1, arr[1] - 2],
-      [arr[0] - 2, arr[1] - 1],
-      [arr[0] - 2, arr[1] + 1],
-      [arr[0] - 1, arr[1] + 2]
-    ];
-    options = options.filter((element) => {
-      if (isInRange(element)) {
-        return element;
-      } else {
-        return false;
+class KnightsTravails {
+  constructor() {
+    let obj = {};
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        obj[[i, j]] = [];
       }
-    });
-    thisArray[index] = item.concat(options);
-  })
+    }
+
+    Object.keys(obj).forEach((key) => {
+      let arr = JSON.parse("[" + key + "]");
+      let options = [
+        [arr[0] + 1, arr[1] + 2],
+        [arr[0] + 2, arr[1] + 1],
+        [arr[0] + 2, arr[1] - 1],
+        [arr[0] + 1, arr[1] - 2],
+        [arr[0] - 1, arr[1] - 2],
+        [arr[0] - 2, arr[1] - 1],
+        [arr[0] - 2, arr[1] + 1],
+        [arr[0] - 1, arr[1] + 2]
+      ];
+      options = options.filter((element) => {
+        if (isInRange(element)) {
+          return element;
+        } else {
+          return false;
+        }
+      });
+      obj[key] = options;
+    })
+
+    this.graphOfMoves = obj;
+    this.visitedPositions = [];
+  }
+
+  knightMoves(positionOne, positionTwo) {
+    isValidPosition(positionOne);
+    isValidPosition(positionTwo);
   
-  return array;
+    if (positionOne.toString() == positionTwo.toString()) {
+      return;
+    }
+  
+    let nextMoves = this.graphOfMoves[positionOne];
+  
+    nextMoves = nextMoves.filter((element) => {
+      if (!this.visitedPositions.some((element2) => element.toString() === element2.toString())) {
+        return element;
+      }
+    })
+  
+    if (nextMoves.some(element => element.toString() === positionTwo.toString())) {
+      this.visitedPositions.push(positionTwo);
+      return this.visitedPositions;
+    }
+  
+    this.visitedPositions.push(positionOne);
+  
+    let moveDistances = nextMoves.map((element) => distanceToTarget(element, positionTwo))
+  
+    nextMoves.forEach(element => this.knightMoves(element, positionTwo))
+    return this.visitedPositions;
+    }
+
 }
 
-function knightMoves(startPosition, targetPosition) {
-  isValidPosition(startPosition);
-  isValidPosition(targetPosition);
+const knightsTravails = new KnightsTravails()
 
-  if (startPosition.toString() == targetPosition.toString()) {
-    console.log('0 moves');
-    return;
-  }
-  let distance = 0;
-  let visitedPositions = [startPosition];
-  let nextMoves = generateNextMoves(startPosition, visitedPositions);
-
-  if (nextMoves.some(element => element.toString() === targetPosition.toString())) {
-    visitedPositions.push(targetPosition);
-    return visitedPositions;
-  } else {
-    nextMoves.forEach(element => knightMoves(element, targetPosition))
-  }
-
+function distanceToTarget(currentPosition, target) {
+  const xDistance = currentPosition[0] - target[0];
+  const yDistance = currentPosition[1] - target[1];
+  return (Math.sqrt(xDistance*xDistance + yDistance*yDistance));
 }
 
-export { createGraphOfMoves }
+
+
+
+
+export { knightsTravails }
