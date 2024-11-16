@@ -26,30 +26,6 @@ function isInRange(arr) {
   };
 }
 
-
-function levelOrder(callback) {
-  if (!callback instanceof Function) {
-    throw new Error('Parameter is not a function!');
-  }
-
-  if (this.root === null) {
-    return;
-  }
-
-  let queue = [];
-  queue.push(this.root);
-  while (queue.length > 0) {
-    let currentNode = queue[0];
-    if (currentNode.leftChild !== null) {
-      queue.push(currentNode.leftChild);
-    }
-    if (currentNode.rightChild !== null) {
-      queue.push(currentNode.rightChild);
-    }
-    callback(queue.shift().data)
-  }
-}
-
 class KnightsTravails {
   constructor() {
     let obj = {};
@@ -83,49 +59,41 @@ class KnightsTravails {
 
     this.graphOfMoves = obj;
     this.visitedPositions = [];
+    this.visited = new Array(64).fill(false);
   }
 
   knightMoves(positionOne, positionTwo) {
     isValidPosition(positionOne);
     isValidPosition(positionTwo);
-  
-    if (positionOne.toString() == positionTwo.toString()) {
-      return;
-    }
-  
-    let nextMoves = this.graphOfMoves[positionOne];
-  
-    nextMoves = nextMoves.filter((element) => {
-      if (!this.visitedPositions.some((element2) => element.toString() === element2.toString())) {
-        return element;
-      }
-    })
-  
-    if (nextMoves.some(element => element.toString() === positionTwo.toString())) {
-      this.visitedPositions.push(positionTwo);
-      return this.visitedPositions;
-    }
-  
+
     this.visitedPositions.push(positionOne);
-  
-    let moveDistances = nextMoves.map((element) => distanceToTarget(element, positionTwo))
-  
-    nextMoves.forEach(element => this.knightMoves(element, positionTwo))
-    return this.visitedPositions;
+
+    if (positionOne.toString() == positionTwo.toString()) {
+      return [positionOne];
     }
+
+    let nextMoves = {positionOne: this.graphOfMoves[positionOne]};
+    let currentMove = nextMoves[0][Object.keys(nextMoves[0])[0]];
+
+
+    while (nextMoves.length > 0) {
+      if (currentMove && currentMove.toString() === positionTwo.toString()) {
+        return this.visitedPositions;
+      }
+      let filteredNextMoves = this.graphOfMoves[currentMove].filter((move) => {
+        return !this.visitedPositions.some(element => element.toString() === move.toString());
+      })
+      nextMoves = nextMoves.concat(filteredNextMoves)
+      nextMoves.shift();
+      currentMove = nextMoves[0]
+      this.visitedPositions.push(currentMove)
+
+    }
+    return this.visitedPositions;
+  }
 
 }
 
 const knightsTravails = new KnightsTravails()
-
-function distanceToTarget(currentPosition, target) {
-  const xDistance = currentPosition[0] - target[0];
-  const yDistance = currentPosition[1] - target[1];
-  return (Math.sqrt(xDistance*xDistance + yDistance*yDistance));
-}
-
-
-
-
 
 export { knightsTravails }
