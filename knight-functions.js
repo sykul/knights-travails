@@ -62,31 +62,49 @@ class KnightsTravails {
     this.visited = new Array(64).fill(false);
   }
 
+  retraceMoves(finalMoveObject) {
+
+  }
+
   knightMoves(positionOne, positionTwo) {
     isValidPosition(positionOne);
     isValidPosition(positionTwo);
 
-    this.visitedPositions.push(positionOne);
+    this.visitedPositions.push({0: positionOne});
 
     if (positionOne.toString() == positionTwo.toString()) {
       return [positionOne];
     }
 
-    let nextMoves = {positionOne: this.graphOfMoves[positionOne]};
-    let currentMove = nextMoves[0][Object.keys(nextMoves[0])[0]];
+    let nextMoves = []
+    for (let move of this.graphOfMoves[positionOne]) {
+      nextMoves.push({[positionOne]: move});
+    }
+    let currentMoveObject = nextMoves.shift();
 
 
     while (nextMoves.length > 0) {
-      if (currentMove && currentMove.toString() === positionTwo.toString()) {
+      let currentMoveKey = [];
+      let currentMoveValue = [];
+      if (currentMoveObject) {
+        currentMoveKey = Object.keys(currentMoveObject)[0];
+        currentMoveValue = Object.values(currentMoveObject)[0];
+      }
+      if (currentMoveValue.toString() === positionTwo.toString()) {
         return this.visitedPositions;
       }
-      let filteredNextMoves = this.graphOfMoves[currentMove].filter((move) => {
-        return !this.visitedPositions.some(element => element.toString() === move.toString());
+
+      let mappedNextMoves = this.graphOfMoves[currentMoveKey].map((move) => {
+        if (!this.visitedPositions.some(element => Object.values(element)[0].toString() === move.toString())) {
+          return {[`${currentMoveKey}`]: move}
+        }
       })
-      nextMoves = nextMoves.concat(filteredNextMoves)
+      .filter((obj) => obj !== undefined);
+
+      nextMoves = nextMoves.concat(mappedNextMoves)
       nextMoves.shift();
-      currentMove = nextMoves[0]
-      this.visitedPositions.push(currentMove)
+      currentMoveObject = nextMoves[0]
+      this.visitedPositions.push(currentMoveObject)
 
     }
     return this.visitedPositions;
