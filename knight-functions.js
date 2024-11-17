@@ -80,10 +80,10 @@ class KnightsTravails {
     for (let move of this.graphOfMoves[positionOne]) {
       nextMoves.push({[positionOne]: move});
     }
-    let currentMoveObject = nextMoves.shift();
 
 
-    while (nextMoves.length > 0) {
+    while (nextMoves.length > 1) {
+      let currentMoveObject = nextMoves.shift();
       let currentMoveKey = [];
       let currentMoveValue = [];
       if (currentMoveObject) {
@@ -95,7 +95,9 @@ class KnightsTravails {
       }
 
       let mappedNextMoves = this.graphOfMoves[currentMoveKey].map((move) => {
-        if (!this.visitedPositions.some(element => Object.values(element)[0].toString() === move.toString())) {
+        if (move.toString() !== currentMoveValue.toString()
+        && !this.visitedPositions.some(element => Object.values(element)[0].toString() === move.toString())
+        && !nextMoves.some(element => Object.values(element)[0].toString() === move.toString())) {
           return {[`${currentMoveKey}`]: move}
         }
       })
