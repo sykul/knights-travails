@@ -59,7 +59,6 @@ class KnightsTravails {
 
     this.graphOfMoves = obj;
     this.visitedPositions = [];
-    this.visited = new Array(64).fill(false);
   }
 
   retraceMoves(finalMoveObject) {
