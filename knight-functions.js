@@ -61,15 +61,29 @@ class KnightsTravails {
     this.visitedPositions = [];
   }
 
-  retraceMoves(finalMoveObject) {
-    console.log(finalMoveObject.keys()[0])
+  retraceMoves(finalMoveObject, startingPosition) {
+    let shortestPathArray = [];
+    shortestPathArray.unshift(finalMoveObject[Object.keys(finalMoveObject)[0]])
+
+    let keyOfMove = Object.keys(finalMoveObject)[0];
+    let currentMove = finalMoveObject[keyOfMove];
+
+    while (currentMove[Object.keys(currentMove)[0]].toString() !== startingPosition.toString()) {
+
+      currentMove = this.visitedPositions.filter((obj) => {
+        let valueOfObj = Object.values(obj)[0];
+        return valueOfObj.toString() === keyOfMove.toString();
+      })
+    }
+
+    return shortestPathArray;
   }
 
   knightMoves(positionOne, positionTwo) {
     isValidPosition(positionOne);
     isValidPosition(positionTwo);
 
-    this.visitedPositions.push({0: positionOne});
+    this.visitedPositions.push({ 0: positionOne });
 
     if (positionOne.toString() == positionTwo.toString()) {
       return [positionOne];
@@ -77,7 +91,7 @@ class KnightsTravails {
 
     let nextMoves = []
     for (let move of this.graphOfMoves[positionOne]) {
-      nextMoves.push({[positionOne]: move});
+      nextMoves.push({ [positionOne]: move });
     }
 
 
@@ -88,24 +102,24 @@ class KnightsTravails {
       if (currentMoveObject) {
         currentMoveKey = Object.keys(currentMoveObject)[0];
         currentMoveValue = Object.values(currentMoveObject)[0];
-      } else if (currentMoveValue.toString() === positionTwo.toString()) {
-        return;
+      }
+      if (currentMoveValue.toString() === positionTwo.toString()) {
+        return this.retraceMoves(currentMoveObject, positionOne);
       }
 
       let mappedNextMoves = this.graphOfMoves[currentMoveValue].map((move) => {
         if (move.toString() !== currentMoveValue.toString()
-        && !this.visitedPositions.some(element => Object.values(element)[0].toString() === move.toString())
-        && !nextMoves.some(element => Object.values(element)[0].toString() === move.toString())) {
-          return {[`${currentMoveValue}`]: move}
+          && !this.visitedPositions.some(element => Object.values(element)[0].toString() === move.toString())
+          && !nextMoves.some(element => Object.values(element)[0].toString() === move.toString())) {
+          return { [`${currentMoveValue}`]: move }
         }
       })
-      .filter((obj) => obj !== undefined);
+        .filter((obj) => obj !== undefined);
 
       nextMoves = nextMoves.concat(mappedNextMoves)
       this.visitedPositions.push(currentMoveObject)
-      console.log(currentMoveObject)
     }
-    return
+    return;
   }
 
 }
