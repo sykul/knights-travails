@@ -63,17 +63,24 @@ class KnightsTravails {
 
   retraceMoves(finalMoveObject, startingPosition) {
     let shortestPathArray = [];
-    shortestPathArray.unshift(finalMoveObject[Object.keys(finalMoveObject)[0]])
 
-    let keyOfMove = Object.keys(finalMoveObject)[0];
-    let currentMove = finalMoveObject[keyOfMove];
+    let currentMoveKey = Object.keys(finalMoveObject)[0];
+    let currentMoveValue = finalMoveObject[currentMoveKey];
+    let currentMoveObject = finalMoveObject;
 
-    while (currentMove[Object.keys(currentMove)[0]].toString() !== startingPosition.toString()) {
+    shortestPathArray.unshift(currentMoveValue.toString())
+    shortestPathArray.unshift(currentMoveKey.toString())
 
-      currentMove = this.visitedPositions.filter((obj) => {
+    while (currentMoveKey.toString() !== startingPosition.toString()) {
+
+      currentMoveObject = this.visitedPositions.filter((obj) => {
         let valueOfObj = Object.values(obj)[0];
-        return valueOfObj.toString() === keyOfMove.toString();
-      })
+        return valueOfObj.toString() === currentMoveKey.toString();
+      })[0]
+      if (currentMoveObject) {
+        currentMoveKey = Object.keys(currentMoveObject)[0];
+      };
+      shortestPathArray.unshift(currentMoveKey);
     }
 
     return shortestPathArray;
